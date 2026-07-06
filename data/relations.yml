@@ -1,0 +1,61 @@
+relations:
+  - id: kubernetes-runs-surrealdb
+    source: kubernetes
+    target: surrealdb
+    type: runs
+    description: Kubernetes provides the cloud-native control plane for running SurrealDB workloads.
+  - id: kubernetes-runs-openfga
+    source: kubernetes
+    target: openfga
+    type: runs
+    description: Kubernetes provides the control plane for OpenFGA deployments.
+  - id: kubernetes-runs-opa
+    source: kubernetes
+    target: opa
+    type: runs
+    description: Kubernetes provides the runtime substrate for policy enforcement components.
+  - id: openfga-complements-opa
+    source: openfga
+    target: opa
+    type: complements
+    description: OpenFGA handles relationship-based authorization while OPA handles broader policy-as-code decisions.
+  - id: did-vc-supports-identity-access
+    source: did-vc
+    target: identity-access
+    type: supports
+    description: DID and Verifiable Credentials support portable identity and trust claims.
+  - id: openid-authzen-supports-openfga
+    source: openid-authzen
+    target: openfga
+    type: integrates-with
+    description: AuthZEN-style authorization APIs can front or standardize authorization decision flows that include OpenFGA.
+  - id: langgraph-uses-litellm
+    source: langgraph
+    target: litellm
+    type: integrates-with
+    description: LangGraph workflows can use LiteLLM for model routing and provider abstraction.
+  - id: langfuse-observes-litellm
+    source: langfuse
+    target: litellm
+    type: observes
+    description: Langfuse can provide observability for LLM calls routed through LiteLLM.
+  - id: ap2-supports-commerce-payments
+    source: ap2
+    target: commerce-payments
+    type: supports
+    description: Agent Payments Protocol supports mandate-based payment flows for agentic commerce.
+  - id: mcp-supports-agent-runtime
+    source: mcp
+    target: agent-runtime
+    type: supports
+    description: Model Context Protocol supports tool and context interoperability for agent runtimes.
+  - id: agennext-uses-langgraph
+    source: agennext
+    target: langgraph
+    type: uses
+    description: AGenNext can use LangGraph-style stateful orchestration for governed agent workflows.
+  - id: unboxd-cloud-runs-kubernetes
+    source: unboxd-cloud
+    target: kubernetes
+    type: uses
+    description: Unboxd Cloud uses Kubernetes as the cloud-native substrate for self-hosted and sovereign infrastructure.
