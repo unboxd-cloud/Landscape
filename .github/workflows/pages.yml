@@ -36,13 +36,20 @@ jobs:
       - name: Export relationship graph
         run: python scripts/export-graph.py
 
-      - name: Copy registry data and graph exports
+      - name: Export CSV files
+        run: python scripts/export-csv.py
+
+      - name: Build API index
+        run: python scripts/build-api-index.py
+
+      - name: Copy registry data and generated exports
         run: |
-          mkdir -p _site/data _site/docs _site/public _site/graph
+          mkdir -p _site/data _site/docs _site/public _site/graph _site/exports
           cp -r data/* _site/data/
           cp -r docs/* _site/docs/
           cp -r public/* _site/public/
-          cp -r dist/* _site/graph/
+          cp dist/landscape-graph.* _site/graph/
+          cp dist/*.csv _site/exports/
           cp landscape.yml _site/landscape.yml
 
       - name: Upload artifact
