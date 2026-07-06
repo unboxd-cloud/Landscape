@@ -16,6 +16,7 @@ ID_PATTERN = re.compile(r"^[a-z0-9]+[a-z0-9-]*[a-z0-9]$")
 MATURITY_VALUES = {"design", "emerging", "active", "incubating", "graduated", "archived"}
 STATUS_VALUES = {"design", "active", "archived"}
 RELATION_TYPES = {"runs", "uses", "supports", "integrates-with", "observes", "complements", "depends-on", "replaces"}
+SCORE_FIELDS = ["openness", "maturity", "self-hostability", "governance-readiness", "cloud-native-fit"]
 
 
 def read_yaml(path: pathlib.Path) -> dict[str, Any]:
@@ -81,6 +82,23 @@ def check_relations(relations: list[dict[str, Any]], valid_ids: set[str]) -> Non
             fail(f"relations/{relation_id} uses invalid type: {relation_type}")
 
 
+def check_scores(scores: list[dict[str, Any]], valid_ids: set[str]) -> None:
+    seen: set[str] = set()
+    for score in scores:
+        entry = score.get("entry")
+        if not entry:
+            fail("scores contains an entry without entry id")
+        if entry in seen:
+            fail(f"scores contains duplicate entry: {entry}")
+        if entry not in valid_ids:
+            fail(f"scores/{entry} references unknown entry")
+        seen.add(entry)
+        for field in SCORE_FIELDS:
+            value = score.get(field)
+            if not isinstance(value, int) or value < 0 or value > 5:
+                fail(f"scores/{entry} has invalid {field}: {value}")
+
+
 def main() -> None:
     categories = read_yaml(DATA / "categories.yml").get("categories", [])
     projects = read_yaml(DATA / "projects.yml").get("projects", [])
@@ -88,6 +106,7 @@ def main() -> None:
     platforms = read_yaml(DATA / "platforms.yml").get("platforms", [])
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
     relations = read_yaml(DATA / "relations.yml").get("relations", [])
+    scores = read_yaml(DATA / "scores.yml").get("scores", [])
 
     collections = {
         "categories": categories,
@@ -117,6 +136,7 @@ def main() -> None:
     for items in [projects, protocols, platforms, vendors]:
         valid_ids.update(item["id"] for item in items)
     check_relations(relations, valid_ids)
+    check_scores(scores, valid_ids)
 
     print("Registry validation passed")
 
