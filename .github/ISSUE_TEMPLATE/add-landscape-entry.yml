@@ -1,0 +1,61 @@
+name: Add landscape entry
+description: Propose a new project, protocol, platform, or foundation entry.
+title: "Add: <entry name>"
+labels:
+  - landscape-entry
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: Official name of the entry.
+      placeholder: Kubernetes
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - project
+        - protocol
+        - platform
+        - foundation
+    validations:
+      required: true
+  - type: input
+    id: category
+    attributes:
+      label: Category ID
+      description: Use one of the IDs from data/categories.yml.
+      placeholder: agent-runtime
+    validations:
+      required: true
+  - type: textarea
+    id: role
+    attributes:
+      label: Architectural role
+      description: Explain why this belongs in the landscape.
+      placeholder: Short architectural role, not marketing copy.
+    validations:
+      required: true
+  - type: input
+    id: homepage
+    attributes:
+      label: Homepage or source URL
+      placeholder: https://example.com/
+    validations:
+      required: false
+  - type: dropdown
+    id: maturity
+    attributes:
+      label: Maturity
+      options:
+        - design
+        - emerging
+        - active
+        - incubating
+        - graduated
+        - archived
+    validations:
+      required: false
