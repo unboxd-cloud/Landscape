@@ -1,0 +1,37 @@
+protocols:
+  - id: mcp
+    name: Model Context Protocol
+    category: protocols
+    maturity: emerging
+    role: Tool and context interoperability for AI applications and agents.
+    homepage: https://modelcontextprotocol.io/
+  - id: a2a
+    name: Agent-to-Agent Protocol
+    category: protocols
+    maturity: emerging
+    role: Agent interoperability and cross-agent communication.
+    homepage: https://github.com/google/A2A
+  - id: ap2
+    name: Agent Payments Protocol
+    category: commerce-payments
+    maturity: emerging
+    role: Payment authorization and mandate flows for agentic commerce.
+    homepage: https://github.com/google-agentic-commerce/AP2
+  - id: openid-authzen
+    name: OpenID AuthZEN
+    category: identity-access
+    maturity: emerging
+    role: Standardized authorization decision API.
+    homepage: https://openid.net/wg/authzen/
+  - id: did-vc
+    name: DID and Verifiable Credentials
+    category: identity-access
+    maturity: active
+    role: Decentralized identity and portable trust credentials.
+    homepage: https://www.w3.org/TR/did-core/
+  - id: open-application-model
+    name: Open Application Model
+    category: developer-experience
+    maturity: active
+    role: Application-centric cloud-native workload description.
+    homepage: https://oam.dev/
