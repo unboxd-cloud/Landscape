@@ -1,0 +1,71 @@
+scores:
+  - entry: kubernetes
+    openness: 5
+    maturity: 5
+    self-hostability: 5
+    governance-readiness: 5
+    cloud-native-fit: 5
+    notes: Mature cloud-native control plane and strong ecosystem fit.
+  - entry: opa
+    openness: 5
+    maturity: 5
+    self-hostability: 5
+    governance-readiness: 5
+    cloud-native-fit: 5
+    notes: Strong policy-as-code fit for governed platforms.
+  - entry: openfga
+    openness: 5
+    maturity: 4
+    self-hostability: 5
+    governance-readiness: 5
+    cloud-native-fit: 4
+    notes: Strong relationship-based authorization fit.
+  - entry: surrealdb
+    openness: 4
+    maturity: 3
+    self-hostability: 5
+    governance-readiness: 3
+    cloud-native-fit: 4
+    notes: Strong multi-model fit with evolving enterprise maturity.
+  - entry: langgraph
+    openness: 4
+    maturity: 4
+    self-hostability: 4
+    governance-readiness: 3
+    cloud-native-fit: 3
+    notes: Strong workflow runtime for stateful agent systems.
+  - entry: litellm
+    openness: 4
+    maturity: 4
+    self-hostability: 4
+    governance-readiness: 3
+    cloud-native-fit: 4
+    notes: Useful model routing abstraction for provider flexibility.
+  - entry: langfuse
+    openness: 4
+    maturity: 4
+    self-hostability: 4
+    governance-readiness: 4
+    cloud-native-fit: 4
+    notes: Strong observability layer for LLM systems.
+  - entry: mcp
+    openness: 5
+    maturity: 3
+    self-hostability: 5
+    governance-readiness: 3
+    cloud-native-fit: 3
+    notes: Important interoperability protocol with fast ecosystem growth.
+  - entry: ap2
+    openness: 4
+    maturity: 2
+    self-hostability: 3
+    governance-readiness: 4
+    cloud-native-fit: 3
+    notes: Emerging protocol direction for agentic payment authorization.
+  - entry: headlamp
+    openness: 5
+    maturity: 4
+    self-hostability: 5
+    governance-readiness: 3
+    cloud-native-fit: 5
+    notes: Useful Kubernetes UI for platform operators.
