@@ -20,6 +20,15 @@ The landscape helps builders, partners, students, enterprises, and operators und
 
 It is not only a vendor list. It is a decision map.
 
+## Outputs
+
+The repository generates multiple outputs from the YAML registry:
+
+- searchable static website through GitHub Pages
+- `landscape.json` machine-readable export
+- `graph/landscape-graph.mmd` Mermaid relationship graph
+- `graph/landscape-graph.dot` Graphviz relationship graph
+
 ## Repository structure
 
 ```text
@@ -30,12 +39,20 @@ It is not only a vendor list. It is a decision map.
 │   ├── projects.yml
 │   ├── protocols.yml
 │   ├── platforms.yml
-│   └── vendors.yml
+│   ├── vendors.yml
+│   └── relations.yml
 ├── docs/
 │   ├── index.md
 │   ├── architecture.md
 │   ├── governance.md
+│   ├── relationship-graph.md
 │   └── contribution-guide.md
+├── schema/
+│   └── entry.schema.json
+├── scripts/
+│   ├── build-site.py
+│   ├── validate-registry.py
+│   └── export-graph.py
 └── .github/workflows/
     ├── validate.yml
     └── pages.yml
@@ -65,15 +82,27 @@ It is not only a vendor list. It is a decision map.
 - Provenance before trust
 - Governance before scale
 
+## Local development
+
+```bash
+pip install -r requirements.txt
+python scripts/validate-registry.py
+python scripts/build-site.py
+python scripts/export-graph.py
+```
+
+Generated files are written to `_site/` and `dist/`.
+
 ## Current status
 
-This repository is in its initial seeded state. The next steps are:
+This repository now contains the first working version of the landscape registry, static site generator, validation pipeline, relationship graph, and graph export tooling.
 
-1. Expand project entries.
-2. Add schema validation.
-3. Generate a static website from the YAML data.
-4. Publish the landscape through GitHub Pages.
-5. Add contribution templates and review governance.
+Next steps:
+
+1. Expand ecosystem entries.
+2. Add visual graph rendering in the website.
+3. Add release automation for versioned landscape snapshots.
+4. Add scoring fields for maturity, license, deployment model, and governance readiness.
 
 ## License
 
