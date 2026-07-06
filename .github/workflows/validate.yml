@@ -52,7 +52,13 @@ jobs:
       - name: Export graph
         run: python scripts/export-graph.py
 
-      - name: Verify generated graph files
+      - name: Create snapshot
+        run: python scripts/snapshot.py
+
+      - name: Verify generated files
         run: |
+          test -s _site/index.html
+          test -s _site/landscape.json
           test -s dist/landscape-graph.mmd
           test -s dist/landscape-graph.dot
+          test -n "$(ls snapshots/landscape-*.json)"
