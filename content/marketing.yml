@@ -1,0 +1,47 @@
+brand:
+  name: Unboxd Cloud Landscape
+  product_name: Unboxd Cloud Enterprise Landscape
+  tagline: Enterprise architecture intelligence for cloud-native and agentic platforms.
+  description: A searchable, scored, graph-aware landscape that helps enterprise teams evaluate technologies, protocols, platforms, and governance readiness.
+  primary_cta: Explore the Landscape
+  secondary_cta: Read the Enterprise Guide
+  audience:
+    - Platform engineering leaders
+    - Enterprise architects
+    - CTO and innovation teams
+    - Security and governance teams
+    - AI platform teams
+hero:
+  eyebrow: Enterprise SaaS Architecture Intelligence
+  title: Make better platform decisions with a living architecture landscape.
+  subtitle: Unboxd Cloud Landscape turns ecosystem sprawl into a governed decision registry with scores, relationships, exports, and release snapshots.
+features:
+  - title: Searchable technology landscape
+    description: Browse projects, protocols, platforms, categories, foundations, and vendors in one structured registry.
+  - title: Decision scoring
+    description: Compare architecture fit across openness, maturity, self-hostability, governance readiness, and cloud-native fit.
+  - title: Relationship graph
+    description: See how identity, runtime, policy, data, observability, and infrastructure components connect.
+  - title: Export-ready data
+    description: Use JSON, CSV, Mermaid, and Graphviz outputs in dashboards, docs, notebooks, and internal platform workflows.
+  - title: Versioned snapshots
+    description: Publish stable landscape releases for architecture reviews, governance boards, and platform strategy cycles.
+  - title: Governance-first model
+    description: Prioritize policy, identity, provenance, auditability, and lifecycle control before scaling agentic systems.
+use_cases:
+  - title: Enterprise platform strategy
+    description: Build a common view of the technologies that belong in the platform stack.
+  - title: AI and agent governance
+    description: Map agent runtimes, model routing, observability, identity, policy, and payment protocols.
+  - title: Vendor and open-source evaluation
+    description: Compare options through a transparent scoring model instead of ad hoc spreadsheets.
+  - title: Architecture review boards
+    description: Use snapshots and exports as stable evidence for platform decisions.
+trust:
+  - Open standards first
+  - Cloud-native by default
+  - Self-hostable where possible
+  - Policy before execution
+  - Identity before access
+  - Provenance before trust
+  - Governance before scale
