@@ -1,0 +1,68 @@
+name: Release Landscape Snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Snapshot version, for example v2026.07
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate registry
+        run: python scripts/validate-registry.py
+
+      - name: Build site
+        run: python scripts/build-site.py
+
+      - name: Export graph
+        run: python scripts/export-graph.py
+
+      - name: Create snapshot
+        run: python scripts/snapshot.py
+
+      - name: Package release assets
+        run: |
+          mkdir -p release-assets
+          cp _site/landscape.json release-assets/landscape.json
+          cp dist/landscape-graph.mmd release-assets/landscape-graph.mmd
+          cp dist/landscape-graph.dot release-assets/landscape-graph.dot
+          cp snapshots/*.json release-assets/
+          tar -czf landscape-snapshot-${{ inputs.version }}.tar.gz release-assets
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          name: Landscape Snapshot ${{ inputs.version }}
+          body: |
+            Versioned Unboxd Cloud Landscape snapshot.
+
+            Includes:
+            - landscape.json
+            - Mermaid relationship graph
+            - Graphviz DOT relationship graph
+            - dated snapshot JSON
+          files: |
+            landscape-snapshot-${{ inputs.version }}.tar.gz
+            release-assets/landscape.json
+            release-assets/landscape-graph.mmd
+            release-assets/landscape-graph.dot
+            release-assets/*.json
