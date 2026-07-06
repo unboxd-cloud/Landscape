@@ -86,6 +86,22 @@ def render_relations(relations: list[dict[str, Any]], names_by_id: dict[str, str
     return "".join(rows)
 
 
+def render_scoring(scoring: dict[str, Any]) -> str:
+    dimensions = scoring.get("scoring", {}).get("dimensions", [])
+    cards = []
+    for dimension in dimensions:
+        cards.append(
+            f"""
+            <article class="score-card">
+              <h3>{esc(dimension.get('name'))}</h3>
+              <p>{esc(dimension.get('description'))}</p>
+              <span>{esc(dimension.get('scale'))}</span>
+            </article>
+            """
+        )
+    return "".join(cards)
+
+
 def main() -> None:
     SITE.mkdir(exist_ok=True)
 
@@ -96,6 +112,7 @@ def main() -> None:
     platforms = read_yaml(DATA / "platforms.yml").get("platforms", [])
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
     relations = read_yaml(DATA / "relations.yml").get("relations", [])
+    scoring = read_yaml(DATA / "scoring.yml")
 
     entries = [
         *normalize("category", categories),
@@ -110,6 +127,7 @@ def main() -> None:
         "landscape": landscape,
         "entries": entries,
         "relations": relations,
+        "scoring": scoring.get("scoring", {}),
     }
     (SITE / "landscape.json").write_text(json.dumps(export, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -141,11 +159,11 @@ def main() -> None:
     .principles {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }}
     .pill {{ border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 12px; color: var(--muted); font-size: 14px; }}
     .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 28px 0; }}
-    .stat {{ background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }}
+    .stat, .score-card {{ background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }}
     .stat strong {{ display: block; font-size: 30px; letter-spacing: -0.04em; }}
     .toolbar {{ position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 190px 220px; gap: 12px; padding: 14px; margin: 0 0 22px; background: rgba(248, 250, 252, .92); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 22px; }}
     input, select {{ width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 12px 14px; font: inherit; color: var(--ink); }}
-    .grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px; }}
+    .grid, .score-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px; }}
     .card {{ background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-height: 210px; }}
     .card[hidden] {{ display: none; }}
     .card-topline {{ display: inline-flex; margin-bottom: 12px; padding: 5px 9px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
@@ -154,7 +172,7 @@ def main() -> None:
     .empty {{ display: none; padding: 28px; border: 1px dashed var(--line); border-radius: 20px; text-align: center; color: var(--muted); }}
     .relations {{ display: grid; gap: 12px; }}
     .relation {{ background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }}
-    .relation span {{ display: inline-flex; margin: 0 8px; padding: 4px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
+    .relation span, .score-card span {{ display: inline-flex; margin: 0 8px 0 0; padding: 4px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
     .relation p {{ margin-bottom: 0; }}
     footer {{ border-top: 1px solid var(--line); padding: 24px; color: var(--muted); text-align: center; }}
     @media (max-width: 780px) {{ .toolbar {{ grid-template-columns: 1fr; }} }}
@@ -176,6 +194,12 @@ def main() -> None:
       <div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div>
       <div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div>
       <div class="stat"><strong>{len(relations)}</strong><span>Relations</span></div>
+    </section>
+
+    <section>
+      <h2>Decision scoring model</h2>
+      <p>The landscape uses these dimensions to evaluate architectural fit, governance readiness, and operational usefulness.</p>
+      <div class="score-grid">{render_scoring(scoring)}</div>
     </section>
 
     <section class="toolbar" aria-label="Landscape filters">
@@ -203,7 +227,7 @@ def main() -> None:
       <div class="relations">{render_relations(relations, names_by_id)}</div>
     </section>
   </main>
-  <footer><a href="landscape.json">JSON export</a> · Apache-2.0 code · CC BY 4.0 documentation · Generated from YAML registry data.</footer>
+  <footer><a href="landscape.json">JSON export</a> · <a href="graph/landscape-graph.mmd">Mermaid graph</a> · <a href="graph/landscape-graph.dot">Graphviz DOT</a> · Apache-2.0 code · CC BY 4.0 documentation</footer>
   <script>
     const search = document.querySelector('#search');
     const kind = document.querySelector('#kind');
