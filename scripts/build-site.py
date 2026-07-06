@@ -68,6 +68,24 @@ def render_cards(items: list[dict[str, Any]]) -> str:
     return "".join(cards)
 
 
+def render_relations(relations: list[dict[str, Any]], names_by_id: dict[str, str]) -> str:
+    rows = []
+    for relation in relations:
+        source = names_by_id.get(relation.get("source"), relation.get("source"))
+        target = names_by_id.get(relation.get("target"), relation.get("target"))
+        rows.append(
+            f"""
+            <article class="relation">
+              <strong>{esc(source)}</strong>
+              <span>{esc(relation.get('type'))}</span>
+              <strong>{esc(target)}</strong>
+              <p>{esc(relation.get('description'))}</p>
+            </article>
+            """
+        )
+    return "".join(rows)
+
+
 def main() -> None:
     SITE.mkdir(exist_ok=True)
 
@@ -77,6 +95,7 @@ def main() -> None:
     protocols = read_yaml(DATA / "protocols.yml").get("protocols", [])
     platforms = read_yaml(DATA / "platforms.yml").get("platforms", [])
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
+    relations = read_yaml(DATA / "relations.yml").get("relations", [])
 
     entries = [
         *normalize("category", categories),
@@ -85,10 +104,12 @@ def main() -> None:
         *normalize("platform", platforms),
         *normalize("foundation", vendors),
     ]
+    names_by_id = {entry["id"]: entry["name"] for entry in entries}
 
     export = {
         "landscape": landscape,
         "entries": entries,
+        "relations": relations,
     }
     (SITE / "landscape.json").write_text(json.dumps(export, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -131,6 +152,10 @@ def main() -> None:
     .meta {{ font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #64748b; }}
     a {{ color: var(--ink); font-weight: 700; }}
     .empty {{ display: none; padding: 28px; border: 1px dashed var(--line); border-radius: 20px; text-align: center; color: var(--muted); }}
+    .relations {{ display: grid; gap: 12px; }}
+    .relation {{ background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }}
+    .relation span {{ display: inline-flex; margin: 0 8px; padding: 4px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
+    .relation p {{ margin-bottom: 0; }}
     footer {{ border-top: 1px solid var(--line); padding: 24px; color: var(--muted); text-align: center; }}
     @media (max-width: 780px) {{ .toolbar {{ grid-template-columns: 1fr; }} }}
   </style>
@@ -150,7 +175,7 @@ def main() -> None:
       <div class="stat"><strong>{len(entries)}</strong><span>Total entries</span></div>
       <div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div>
       <div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div>
-      <div class="stat"><strong>{len(categories)}</strong><span>Categories</span></div>
+      <div class="stat"><strong>{len(relations)}</strong><span>Relations</span></div>
     </section>
 
     <section class="toolbar" aria-label="Landscape filters">
@@ -170,6 +195,12 @@ def main() -> None:
       <div id="count" class="meta">Showing {len(entries)} entries</div>
       <div id="cards" class="grid">{render_cards(entries)}</div>
       <div id="empty" class="empty">No entries match the current filters.</div>
+    </section>
+
+    <section>
+      <h2>Relationship graph</h2>
+      <p>These relations explain how technologies connect across runtime, identity, policy, data, observability, and infrastructure layers.</p>
+      <div class="relations">{render_relations(relations, names_by_id)}</div>
     </section>
   </main>
   <footer><a href="landscape.json">JSON export</a> · Apache-2.0 code · CC BY 4.0 documentation · Generated from YAML registry data.</footer>
