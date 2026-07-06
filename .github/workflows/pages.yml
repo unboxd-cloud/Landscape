@@ -36,6 +36,9 @@ jobs:
       - name: Build market building block site
         run: python scripts/build-market-site.py
 
+      - name: Build SaaS management site
+        run: python scripts/build-saas-site.py
+
       - name: Export relationship graph
         run: python scripts/export-graph.py
 
