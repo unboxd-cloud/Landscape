@@ -22,12 +22,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare site
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Build static site
+        run: python scripts/build-site.py
+
+      - name: Copy registry data
         run: |
-          mkdir -p _site
-          cp README.md _site/index.md
-          cp -r docs _site/docs
-          cp -r data _site/data
+          mkdir -p _site/data _site/docs _site/public
+          cp -r data/* _site/data/
+          cp -r docs/* _site/docs/
+          cp -r public/* _site/public/
           cp landscape.yml _site/landscape.yml
 
       - name: Upload artifact
