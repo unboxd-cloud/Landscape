@@ -99,6 +99,24 @@ def check_scores(scores: list[dict[str, Any]], valid_ids: set[str]) -> None:
                 fail(f"scores/{entry} has invalid {field}: {value}")
 
 
+def check_market_building_blocks(market: dict[str, Any], valid_categories: set[str]) -> None:
+    payload = market.get("market_building_blocks", {})
+    families = payload.get("families", [])
+    if not families:
+        fail("market_building_blocks has no families")
+    check_unique_ids("market_building_blocks.families", families)
+    check_required_text("market_building_blocks.families", families, ["name", "description"])
+    for family in families:
+        family_id = family.get("id")
+        for field in ["example_markets", "building_blocks", "landscape_categories"]:
+            values = family.get(field)
+            if not isinstance(values, list) or not values:
+                fail(f"market_building_blocks/{family_id} requires non-empty list: {field}")
+        for category in family.get("landscape_categories", []):
+            if category not in valid_categories:
+                fail(f"market_building_blocks/{family_id} uses unknown landscape category: {category}")
+
+
 def main() -> None:
     categories = read_yaml(DATA / "categories.yml").get("categories", [])
     projects = read_yaml(DATA / "projects.yml").get("projects", [])
@@ -107,6 +125,7 @@ def main() -> None:
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
     relations = read_yaml(DATA / "relations.yml").get("relations", [])
     scores = read_yaml(DATA / "scores.yml").get("scores", [])
+    market = read_yaml(DATA / "market-building-blocks.yml")
 
     collections = {
         "categories": categories,
@@ -137,6 +156,7 @@ def main() -> None:
         valid_ids.update(item["id"] for item in items)
     check_relations(relations, valid_ids)
     check_scores(scores, valid_ids)
+    check_market_building_blocks(market, valid_categories)
 
     print("Registry validation passed")
 
