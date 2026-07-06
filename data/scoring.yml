@@ -1,0 +1,29 @@
+scoring:
+  dimensions:
+    - id: openness
+      name: Openness
+      description: Open source availability, open standards alignment, and interoperability posture.
+      scale: 0-5
+    - id: maturity
+      name: Maturity
+      description: Operational maturity, adoption, release stability, and ecosystem confidence.
+      scale: 0-5
+    - id: self-hostability
+      name: Self-hostability
+      description: Ability to run independently in private, sovereign, edge, or air-gapped environments.
+      scale: 0-5
+    - id: governance-readiness
+      name: Governance readiness
+      description: Auditability, policy integration, identity integration, observability, and lifecycle control.
+      scale: 0-5
+    - id: cloud-native-fit
+      name: Cloud-native fit
+      description: Fit with Kubernetes, declarative operations, automation, and platform engineering workflows.
+      scale: 0-5
+  rubric:
+    0: Not applicable or unknown
+    1: Weak fit
+    2: Partial fit
+    3: Usable fit
+    4: Strong fit
+    5: Excellent fit
