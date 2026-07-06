@@ -26,3 +26,4 @@ data_files:
   relations: data/relations.yml
   scoring: data/scoring.yml
   scores: data/scores.yml
+  market_building_blocks: data/market-building-blocks.yml
