@@ -64,11 +64,7 @@ def render_cards(items: list[dict[str, Any]]) -> str:
         meta = " · ".join(esc(part) for part in meta_parts if part)
         search_text = " ".join(
             str(part or "")
-            for part in [
-                item.get("name"), item.get("id"), item.get("kind"), item.get("category"),
-                item.get("type"), item.get("maturity"), item.get("status"), item.get("summary"),
-                item.get("average_score"),
-            ]
+            for part in [item.get("name"), item.get("id"), item.get("kind"), item.get("category"), item.get("type"), item.get("maturity"), item.get("status"), item.get("summary"), item.get("average_score")]
         ).lower()
         cards.append(
             f"""
@@ -163,13 +159,7 @@ def main() -> None:
     ]
     names_by_id = {entry["id"]: entry["name"] for entry in entries}
 
-    export = {
-        "landscape": landscape,
-        "entries": entries,
-        "relations": relations,
-        "scoring": scoring.get("scoring", {}),
-        "scores": scores,
-    }
+    export = {"landscape": landscape, "entries": entries, "relations": relations, "scoring": scoring.get("scoring", {}), "scores": scores}
     (SITE / "landscape.json").write_text(json.dumps(export, indent=2, sort_keys=True), encoding="utf-8")
 
     kind_options = sorted({entry.get("kind", "") for entry in entries if entry.get("kind")})
@@ -204,8 +194,9 @@ def main() -> None:
     .stat strong {{ display: block; font-size: 30px; letter-spacing: -0.04em; }}
     .toolbar {{ position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 190px 220px; gap: 12px; padding: 14px; margin: 0 0 22px; background: rgba(248, 250, 252, .92); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 22px; }}
     input, select {{ width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 12px 14px; font: inherit; color: var(--ink); }}
-    .grid, .score-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px; }}
-    .card {{ background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-height: 230px; }}
+    .grid, .score-grid, .export-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px; }}
+    .card, .export-card {{ background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-height: 230px; }}
+    .export-card {{ min-height: auto; }}
     .card[hidden] {{ display: none; }}
     .card-topline {{ display: inline-flex; margin-bottom: 12px; padding: 5px 9px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
     .avg-score {{ float: right; margin-top: -36px; padding: 8px 10px; border-radius: 14px; background: var(--soft); color: var(--muted); font-size: 13px; }}
@@ -230,9 +221,7 @@ def main() -> None:
     <div class="hero">
       <h1>{esc(landscape.get('name'))}</h1>
       <p class="lead">{esc(landscape.get('description'))}</p>
-      <div class="principles">
-        {''.join(f'<span class="pill">{esc(p)}</span>' for p in landscape.get('principles', []))}
-      </div>
+      <div class="principles">{''.join(f'<span class="pill">{esc(p)}</span>' for p in landscape.get('principles', []))}</div>
     </div>
   </header>
   <main>
@@ -241,6 +230,17 @@ def main() -> None:
       <div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div>
       <div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div>
       <div class="stat"><strong>{len(scores)}</strong><span>Scored entries</span></div>
+    </section>
+
+    <section>
+      <h2>Exports and API</h2>
+      <p>Use these generated files to integrate the landscape with dashboards, docs, notebooks, and downstream platform tooling.</p>
+      <div class="export-grid">
+        <article class="export-card"><h3>API index</h3><p>Discover all public generated artifacts.</p><a href="api.json">api.json</a></article>
+        <article class="export-card"><h3>JSON registry</h3><p>Complete machine-readable registry.</p><a href="landscape.json">landscape.json</a></article>
+        <article class="export-card"><h3>CSV exports</h3><p>Tabular entries, relations, and scores.</p><a href="exports/entries.csv">entries</a> · <a href="exports/relations.csv">relations</a> · <a href="exports/scores.csv">scores</a></article>
+        <article class="export-card"><h3>Graph exports</h3><p>Mermaid and Graphviz architecture graph.</p><a href="graph/landscape-graph.mmd">Mermaid</a> · <a href="graph/landscape-graph.dot">DOT</a></article>
+      </div>
     </section>
 
     <section>
@@ -257,14 +257,8 @@ def main() -> None:
 
     <section class="toolbar" aria-label="Landscape filters">
       <input id="search" type="search" placeholder="Search projects, protocols, platforms..." aria-label="Search landscape" />
-      <select id="kind" aria-label="Filter by kind">
-        <option value="">All kinds</option>
-        {''.join(f'<option value="{esc(k)}">{esc(k.title())}</option>' for k in kind_options)}
-      </select>
-      <select id="category" aria-label="Filter by category">
-        <option value="">All categories</option>
-        {''.join(f'<option value="{esc(c)}">{esc(c)}</option>' for c in category_options)}
-      </select>
+      <select id="kind" aria-label="Filter by kind"><option value="">All kinds</option>{''.join(f'<option value="{esc(k)}">{esc(k.title())}</option>' for k in kind_options)}</select>
+      <select id="category" aria-label="Filter by category"><option value="">All categories</option>{''.join(f'<option value="{esc(c)}">{esc(c)}</option>' for c in category_options)}</select>
     </section>
 
     <section>
@@ -280,7 +274,7 @@ def main() -> None:
       <div class="relations">{render_relations(relations, names_by_id)}</div>
     </section>
   </main>
-  <footer><a href="landscape.json">JSON export</a> · <a href="graph/landscape-graph.mmd">Mermaid graph</a> · <a href="graph/landscape-graph.dot">Graphviz DOT</a> · Apache-2.0 code · CC BY 4.0 documentation</footer>
+  <footer><a href="api.json">API index</a> · <a href="landscape.json">JSON export</a> · <a href="exports/entries.csv">CSV</a> · <a href="graph/landscape-graph.mmd">Mermaid graph</a> · <a href="graph/landscape-graph.dot">Graphviz DOT</a> · Apache-2.0 code · CC BY 4.0 documentation</footer>
   <script>
     const search = document.querySelector('#search');
     const kind = document.querySelector('#kind');
@@ -288,7 +282,6 @@ def main() -> None:
     const cards = Array.from(document.querySelectorAll('.card'));
     const count = document.querySelector('#count');
     const empty = document.querySelector('#empty');
-
     function applyFilters() {{
       const q = search.value.trim().toLowerCase();
       const k = kind.value;
@@ -305,7 +298,6 @@ def main() -> None:
       count.textContent = `Showing ${{visible}} entries`;
       empty.style.display = visible === 0 ? 'block' : 'none';
     }}
-
     search.addEventListener('input', applyFilters);
     kind.addEventListener('change', applyFilters);
     category.addEventListener('change', applyFilters);
