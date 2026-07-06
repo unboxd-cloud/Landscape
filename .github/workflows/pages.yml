@@ -42,6 +42,9 @@ jobs:
       - name: Build API index
         run: python scripts/build-api-index.py
 
+      - name: Build SEO artifacts
+        run: python scripts/build-seo.py
+
       - name: Copy registry data and generated exports
         run: |
           mkdir -p _site/data _site/docs _site/public _site/graph _site/exports
