@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unboxd-cloud.github.io/Landscape/schema/entry.schema.json",
+  "title": "Landscape Entry",
+  "type": "object",
+  "required": ["id", "name"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+[a-z0-9-]*[a-z0-9]$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "maturity": {
+      "type": "string",
+      "enum": ["design", "emerging", "active", "incubating", "graduated", "archived"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["design", "active", "archived"]
+    },
+    "role": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "homepage": {
+      "type": "string",
+      "format": "uri"
+    }
+  },
+  "additionalProperties": true
+}
