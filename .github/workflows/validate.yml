@@ -58,6 +58,9 @@ jobs:
       - name: Build API index
         run: python scripts/build-api-index.py
 
+      - name: Build SEO artifacts
+        run: python scripts/build-seo.py
+
       - name: Create snapshot
         run: python scripts/snapshot.py
 
@@ -66,6 +69,8 @@ jobs:
           test -s _site/index.html
           test -s _site/landscape.json
           test -s _site/api.json
+          test -s _site/robots.txt
+          test -s _site/sitemap.xml
           test -s dist/landscape-graph.mmd
           test -s dist/landscape-graph.dot
           test -s dist/entries.csv
