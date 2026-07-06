@@ -50,9 +50,7 @@ def normalize(kind: str, items: list[dict[str, Any]], scores_by_entry: dict[str,
 
 def render_score_badge(item: dict[str, Any]) -> str:
     avg = item.get("average_score")
-    if avg is None:
-        return ""
-    return f'<div class="avg-score">Score <strong>{esc(avg)}</strong>/5</div>'
+    return "" if avg is None else f'<div class="avg-score">Score <strong>{esc(avg)}</strong>/5</div>'
 
 
 def render_cards(items: list[dict[str, Any]]) -> str:
@@ -62,77 +60,64 @@ def render_cards(items: list[dict[str, Any]]) -> str:
         link = f'<a href="{esc(homepage)}" target="_blank" rel="noreferrer">Homepage</a>' if homepage else ""
         meta_parts = [item.get("kind"), item.get("category"), item.get("type"), item.get("maturity"), item.get("status")]
         meta = " · ".join(esc(part) for part in meta_parts if part)
-        search_text = " ".join(
-            str(part or "")
-            for part in [item.get("name"), item.get("id"), item.get("kind"), item.get("category"), item.get("type"), item.get("maturity"), item.get("status"), item.get("summary"), item.get("average_score")]
-        ).lower()
-        cards.append(
-            f"""
-            <article class="card" data-kind="{esc(item.get('kind'))}" data-category="{esc(item.get('category'))}" data-search="{esc(search_text)}">
-              <div class="card-topline">{esc(item.get('kind')).replace('-', ' ')}</div>
-              <h3>{esc(item.get('name'))}</h3>
-              {render_score_badge(item)}
-              <p class="meta">{meta}</p>
-              <p>{esc(item.get('summary'))}</p>
-              {link}
-            </article>
-            """
-        )
+        search_text = " ".join(str(part or "") for part in [item.get("name"), item.get("id"), item.get("kind"), item.get("category"), item.get("type"), item.get("maturity"), item.get("status"), item.get("summary"), item.get("average_score")]).lower()
+        cards.append(f"""
+          <article class="card" data-kind="{esc(item.get('kind'))}" data-category="{esc(item.get('category'))}" data-search="{esc(search_text)}">
+            <div class="card-topline">{esc(item.get('kind')).replace('-', ' ')}</div>
+            <h3>{esc(item.get('name'))}</h3>
+            {render_score_badge(item)}
+            <p class="meta">{meta}</p>
+            <p>{esc(item.get('summary'))}</p>
+            {link}
+          </article>
+        """)
     return "".join(cards)
 
 
 def render_relations(relations: list[dict[str, Any]], names_by_id: dict[str, str]) -> str:
-    rows = []
-    for relation in relations:
-        source = names_by_id.get(relation.get("source"), relation.get("source"))
-        target = names_by_id.get(relation.get("target"), relation.get("target"))
-        rows.append(
-            f"""
-            <article class="relation">
-              <strong>{esc(source)}</strong>
-              <span>{esc(relation.get('type'))}</span>
-              <strong>{esc(target)}</strong>
-              <p>{esc(relation.get('description'))}</p>
-            </article>
-            """
-        )
-    return "".join(rows)
+    return "".join(
+        f"""
+        <article class="relation">
+          <strong>{esc(names_by_id.get(relation.get('source'), relation.get('source')))}</strong>
+          <span>{esc(relation.get('type'))}</span>
+          <strong>{esc(names_by_id.get(relation.get('target'), relation.get('target')))}</strong>
+          <p>{esc(relation.get('description'))}</p>
+        </article>
+        """
+        for relation in relations
+    )
 
 
 def render_scoring(scoring: dict[str, Any]) -> str:
     dimensions = scoring.get("scoring", {}).get("dimensions", [])
-    cards = []
-    for dimension in dimensions:
-        cards.append(
-            f"""
-            <article class="score-card">
-              <h3>{esc(dimension.get('name'))}</h3>
-              <p>{esc(dimension.get('description'))}</p>
-              <span>{esc(dimension.get('scale'))}</span>
-            </article>
-            """
-        )
-    return "".join(cards)
+    return "".join(
+        f"""
+        <article class="score-card">
+          <h3>{esc(dimension.get('name'))}</h3>
+          <p>{esc(dimension.get('description'))}</p>
+          <span>{esc(dimension.get('scale'))}</span>
+        </article>
+        """
+        for dimension in dimensions
+    )
 
 
 def render_score_table(scores: list[dict[str, Any]], names_by_id: dict[str, str]) -> str:
     rows = []
     for score in sorted(scores, key=lambda item: average_score(item) or 0, reverse=True):
         avg = average_score(score)
-        rows.append(
-            f"""
-            <tr>
-              <td>{esc(names_by_id.get(score.get('entry'), score.get('entry')))}</td>
-              <td>{esc(avg)}</td>
-              <td>{esc(score.get('openness'))}</td>
-              <td>{esc(score.get('maturity'))}</td>
-              <td>{esc(score.get('self-hostability'))}</td>
-              <td>{esc(score.get('governance-readiness'))}</td>
-              <td>{esc(score.get('cloud-native-fit'))}</td>
-              <td>{esc(score.get('notes'))}</td>
-            </tr>
-            """
-        )
+        rows.append(f"""
+          <tr>
+            <td>{esc(names_by_id.get(score.get('entry'), score.get('entry')))}</td>
+            <td>{esc(avg)}</td>
+            <td>{esc(score.get('openness'))}</td>
+            <td>{esc(score.get('maturity'))}</td>
+            <td>{esc(score.get('self-hostability'))}</td>
+            <td>{esc(score.get('governance-readiness'))}</td>
+            <td>{esc(score.get('cloud-native-fit'))}</td>
+            <td>{esc(score.get('notes'))}</td>
+          </tr>
+        """)
     return "".join(rows)
 
 
@@ -149,6 +134,7 @@ def main() -> None:
     scoring = read_yaml(DATA / "scoring.yml")
     scores = read_yaml(DATA / "scores.yml").get("scores", [])
     scores_by_entry = {score["entry"]: score for score in scores}
+    site_url = str(landscape.get("site_url") or "https://unboxd-cloud.github.io/Landscape").rstrip("/")
 
     entries = [
         *normalize("category", categories, scores_by_entry),
@@ -172,9 +158,15 @@ def main() -> None:
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{esc(landscape.get('name'))}</title>
   <meta name="description" content="{esc(landscape.get('description'))}" />
+  <link rel="canonical" href="{esc(site_url)}/" />
   <meta property="og:title" content="{esc(landscape.get('name'))}" />
   <meta property="og:description" content="{esc(landscape.get('description'))}" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="{esc(site_url)}/" />
+  <meta property="og:image" content="{esc(site_url)}/public/logo.svg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{esc(landscape.get('name'))}" />
+  <meta name="twitter:description" content="{esc(landscape.get('description'))}" />
   <style>
     :root {{ --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --bg: #f8fafc; --card: #ffffff; --soft: #f1f5f9; }}
     * {{ box-sizing: border-box; }}
@@ -217,64 +209,17 @@ def main() -> None:
   </style>
 </head>
 <body>
-  <header>
-    <div class="hero">
-      <h1>{esc(landscape.get('name'))}</h1>
-      <p class="lead">{esc(landscape.get('description'))}</p>
-      <div class="principles">{''.join(f'<span class="pill">{esc(p)}</span>' for p in landscape.get('principles', []))}</div>
-    </div>
-  </header>
+  <header><div class="hero"><h1>{esc(landscape.get('name'))}</h1><p class="lead">{esc(landscape.get('description'))}</p><div class="principles">{''.join(f'<span class="pill">{esc(p)}</span>' for p in landscape.get('principles', []))}</div></div></header>
   <main>
-    <section class="stats" aria-label="Landscape statistics">
-      <div class="stat"><strong>{len(entries)}</strong><span>Total entries</span></div>
-      <div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div>
-      <div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div>
-      <div class="stat"><strong>{len(scores)}</strong><span>Scored entries</span></div>
-    </section>
-
-    <section>
-      <h2>Exports and API</h2>
-      <p>Use these generated files to integrate the landscape with dashboards, docs, notebooks, and downstream platform tooling.</p>
-      <div class="export-grid">
-        <article class="export-card"><h3>API index</h3><p>Discover all public generated artifacts.</p><a href="api.json">api.json</a></article>
-        <article class="export-card"><h3>JSON registry</h3><p>Complete machine-readable registry.</p><a href="landscape.json">landscape.json</a></article>
-        <article class="export-card"><h3>CSV exports</h3><p>Tabular entries, relations, and scores.</p><a href="exports/entries.csv">entries</a> · <a href="exports/relations.csv">relations</a> · <a href="exports/scores.csv">scores</a></article>
-        <article class="export-card"><h3>Graph exports</h3><p>Mermaid and Graphviz architecture graph.</p><a href="graph/landscape-graph.mmd">Mermaid</a> · <a href="graph/landscape-graph.dot">DOT</a></article>
-      </div>
-    </section>
-
-    <section>
-      <h2>Decision scoring model</h2>
-      <p>The landscape uses these dimensions to evaluate architectural fit, governance readiness, and operational usefulness.</p>
-      <div class="score-grid">{render_scoring(scoring)}</div>
-    </section>
-
-    <section>
-      <h2>Scoreboard</h2>
-      <p>Scores are directional architecture signals. They should be improved with evidence over time.</p>
-      <div class="table-wrap"><table><thead><tr><th>Entry</th><th>Avg</th><th>Open</th><th>Mature</th><th>Self-host</th><th>Gov</th><th>Cloud-native</th><th>Notes</th></tr></thead><tbody>{render_score_table(scores, names_by_id)}</tbody></table></div>
-    </section>
-
-    <section class="toolbar" aria-label="Landscape filters">
-      <input id="search" type="search" placeholder="Search projects, protocols, platforms..." aria-label="Search landscape" />
-      <select id="kind" aria-label="Filter by kind"><option value="">All kinds</option>{''.join(f'<option value="{esc(k)}">{esc(k.title())}</option>' for k in kind_options)}</select>
-      <select id="category" aria-label="Filter by category"><option value="">All categories</option>{''.join(f'<option value="{esc(c)}">{esc(c)}</option>' for c in category_options)}</select>
-    </section>
-
-    <section>
-      <h2>Landscape entries</h2>
-      <div id="count" class="meta">Showing {len(entries)} entries</div>
-      <div id="cards" class="grid">{render_cards(entries)}</div>
-      <div id="empty" class="empty">No entries match the current filters.</div>
-    </section>
-
-    <section>
-      <h2>Relationship graph</h2>
-      <p>These relations explain how technologies connect across runtime, identity, policy, data, observability, and infrastructure layers.</p>
-      <div class="relations">{render_relations(relations, names_by_id)}</div>
-    </section>
+    <section class="stats" aria-label="Landscape statistics"><div class="stat"><strong>{len(entries)}</strong><span>Total entries</span></div><div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div><div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div><div class="stat"><strong>{len(scores)}</strong><span>Scored entries</span></div></section>
+    <section><h2>Exports and API</h2><p>Use these generated files to integrate the landscape with dashboards, docs, notebooks, and downstream platform tooling.</p><div class="export-grid"><article class="export-card"><h3>API index</h3><p>Discover all public generated artifacts.</p><a href="api.json">api.json</a></article><article class="export-card"><h3>JSON registry</h3><p>Complete machine-readable registry.</p><a href="landscape.json">landscape.json</a></article><article class="export-card"><h3>CSV exports</h3><p>Tabular entries, relations, and scores.</p><a href="exports/entries.csv">entries</a> · <a href="exports/relations.csv">relations</a> · <a href="exports/scores.csv">scores</a></article><article class="export-card"><h3>Graph exports</h3><p>Mermaid and Graphviz architecture graph.</p><a href="graph/landscape-graph.mmd">Mermaid</a> · <a href="graph/landscape-graph.dot">DOT</a></article></div></section>
+    <section><h2>Decision scoring model</h2><p>The landscape uses these dimensions to evaluate architectural fit, governance readiness, and operational usefulness.</p><div class="score-grid">{render_scoring(scoring)}</div></section>
+    <section><h2>Scoreboard</h2><p>Scores are directional architecture signals. They should be improved with evidence over time.</p><div class="table-wrap"><table><thead><tr><th>Entry</th><th>Avg</th><th>Open</th><th>Mature</th><th>Self-host</th><th>Gov</th><th>Cloud-native</th><th>Notes</th></tr></thead><tbody>{render_score_table(scores, names_by_id)}</tbody></table></div></section>
+    <section class="toolbar" aria-label="Landscape filters"><input id="search" type="search" placeholder="Search projects, protocols, platforms..." aria-label="Search landscape" /><select id="kind" aria-label="Filter by kind"><option value="">All kinds</option>{''.join(f'<option value="{esc(k)}">{esc(k.title())}</option>' for k in kind_options)}</select><select id="category" aria-label="Filter by category"><option value="">All categories</option>{''.join(f'<option value="{esc(c)}">{esc(c)}</option>' for c in category_options)}</select></section>
+    <section><h2>Landscape entries</h2><div id="count" class="meta">Showing {len(entries)} entries</div><div id="cards" class="grid">{render_cards(entries)}</div><div id="empty" class="empty">No entries match the current filters.</div></section>
+    <section><h2>Relationship graph</h2><p>These relations explain how technologies connect across runtime, identity, policy, data, observability, and infrastructure layers.</p><div class="relations">{render_relations(relations, names_by_id)}</div></section>
   </main>
-  <footer><a href="api.json">API index</a> · <a href="landscape.json">JSON export</a> · <a href="exports/entries.csv">CSV</a> · <a href="graph/landscape-graph.mmd">Mermaid graph</a> · <a href="graph/landscape-graph.dot">Graphviz DOT</a> · Apache-2.0 code · CC BY 4.0 documentation</footer>
+  <footer><a href="api.json">API index</a> · <a href="landscape.json">JSON export</a> · <a href="exports/entries.csv">CSV</a> · <a href="graph/landscape-graph.mmd">Mermaid graph</a> · <a href="graph/landscape-graph.dot">Graphviz DOT</a> · <a href="sitemap.xml">Sitemap</a> · Apache-2.0 code · CC BY 4.0 documentation</footer>
   <script>
     const search = document.querySelector('#search');
     const kind = document.querySelector('#kind');
@@ -288,10 +233,7 @@ def main() -> None:
       const c = category.value;
       let visible = 0;
       for (const card of cards) {{
-        const matchesSearch = !q || card.dataset.search.includes(q);
-        const matchesKind = !k || card.dataset.kind === k;
-        const matchesCategory = !c || card.dataset.category === c;
-        const show = matchesSearch && matchesKind && matchesCategory;
+        const show = (!q || card.dataset.search.includes(q)) && (!k || card.dataset.kind === k) && (!c || card.dataset.category === c);
         card.hidden = !show;
         if (show) visible += 1;
       }}
