@@ -1,0 +1,21 @@
+platforms:
+  - id: unboxd-cloud
+    name: Unboxd Cloud
+    category: edge-sovereign-cloud
+    role: Open cloud-in-a-box platform for sovereign and self-hosted infrastructure.
+    status: active
+  - id: agennext
+    name: AGenNext
+    category: agent-runtime
+    role: Enterprise agent platform for governed autonomous work.
+    status: active
+  - id: kubecontainer
+    name: KubeContainer
+    category: developer-experience
+    role: Container-native unit for autonomous work loops and platform packaging.
+    status: design
+  - id: didoneworld
+    name: DIDOneWorld
+    category: identity-access
+    role: Identity-first world and DID/VC platform direction.
+    status: design
