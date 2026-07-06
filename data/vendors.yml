@@ -1,0 +1,21 @@
+vendors:
+  - id: cncf
+    name: Cloud Native Computing Foundation
+    type: foundation
+    role: Cloud-native project ecosystem and maturity reference.
+    homepage: https://www.cncf.io/
+  - id: openid-foundation
+    name: OpenID Foundation
+    type: standards-body
+    role: Identity and authorization standards.
+    homepage: https://openid.net/
+  - id: w3c
+    name: World Wide Web Consortium
+    type: standards-body
+    role: Web, DID, and credential standards.
+    homepage: https://www.w3.org/
+  - id: apache
+    name: Apache Software Foundation
+    type: foundation
+    role: Open source infrastructure, data, workflow, and governance projects.
+    homepage: https://www.apache.org/
