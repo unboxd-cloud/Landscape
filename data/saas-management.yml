@@ -1,0 +1,130 @@
+saas_management:
+  product:
+    id: enterprise-landscape-manager
+    name: Enterprise Landscape Manager
+    description: SaaS management layer for enterprise architecture, market mapping, building blocks, governance scoring, and platform decision intelligence.
+  modules:
+    - id: market-catalog
+      name: Market Catalog
+      description: Manage market families, software categories, building blocks, and landscape mappings.
+      capabilities:
+        - market family management
+        - category mapping
+        - building block registry
+        - analyst-reference notes
+        - internal taxonomy ownership
+    - id: technology-registry
+      name: Technology Registry
+      description: Manage projects, protocols, platforms, vendors, foundations, and internal technology standards.
+      capabilities:
+        - entry lifecycle management
+        - category assignment
+        - owner assignment
+        - source links
+        - maturity status
+    - id: decision-scoring
+      name: Decision Scoring
+      description: Score technologies against architecture, governance, cloud-native, and self-hostability criteria.
+      capabilities:
+        - score rubric management
+        - per-entry scoring
+        - review notes
+        - score history
+        - architecture review exports
+    - id: relationship-graph
+      name: Relationship Graph
+      description: Map relationships between markets, technologies, protocols, platform layers, and governance controls.
+      capabilities:
+        - dependency mapping
+        - capability mapping
+        - graph exports
+        - architecture narratives
+        - impact review
+    - id: governance-workflows
+      name: Governance Workflows
+      description: Support structured reviews for adoption, retirement, replacement, and platform standardization decisions.
+      capabilities:
+        - review workflow
+        - approval evidence
+        - snapshot releases
+        - decision records
+        - export packages
+    - id: exports-api
+      name: Exports and API
+      description: Publish landscape data for dashboards, docs, notebooks, procurement workflows, and internal platforms.
+      capabilities:
+        - JSON export
+        - CSV export
+        - Mermaid graph
+        - Graphviz DOT graph
+        - API index
+  personas:
+    - id: enterprise-architect
+      name: Enterprise Architect
+      needs:
+        - compare technology categories
+        - define reference architecture
+        - document decisions
+        - standardize platform choices
+    - id: platform-leader
+      name: Platform Engineering Leader
+      needs:
+        - manage platform building blocks
+        - identify standard components
+        - reduce duplication
+        - support self-service delivery
+    - id: ai-governance-lead
+      name: AI Governance Lead
+      needs:
+        - map AI risks
+        - score governance readiness
+        - review observability coverage
+        - track lifecycle controls
+    - id: cto-office
+      name: CTO Office
+      needs:
+        - align investment decisions
+        - compare strategic options
+        - prepare executive reviews
+        - publish technology direction
+    - id: procurement-vendor-team
+      name: Procurement and Vendor Team
+      needs:
+        - compare vendor categories
+        - understand capability overlap
+        - prepare evaluation shortlists
+        - reduce tool sprawl
+  pricing_tiers:
+    - id: community
+      name: Community
+      audience: Open-source teams and public landscape users
+      features:
+        - public registry
+        - public website
+        - JSON and CSV exports
+        - graph exports
+    - id: team
+      name: Team
+      audience: Small platform teams and architecture groups
+      features:
+        - private registry
+        - scoring workflows
+        - team ownership
+        - snapshot releases
+    - id: enterprise
+      name: Enterprise
+      audience: Large enterprises and regulated organizations
+      features:
+        - custom taxonomies
+        - governance workflows
+        - SSO and access control
+        - audit evidence
+        - advisory support
+    - id: sovereign
+      name: Sovereign
+      audience: Self-hosted, air-gapped, and regulated environments
+      features:
+        - self-hosted deployment
+        - offline exports
+        - private package releases
+        - internal governance model
