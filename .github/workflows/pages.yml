@@ -45,6 +45,9 @@ jobs:
       - name: Build SEO artifacts
         run: python scripts/build-seo.py
 
+      - name: Inject JSON-LD
+        run: python scripts/inject-jsonld.py
+
       - name: Copy registry data and generated exports
         run: |
           mkdir -p _site/data _site/docs _site/public _site/graph _site/exports
@@ -54,6 +57,9 @@ jobs:
           cp dist/landscape-graph.* _site/graph/
           cp dist/*.csv _site/exports/
           cp landscape.yml _site/landscape.yml
+
+      - name: Check generated links
+        run: python scripts/check-generated-links.py
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
