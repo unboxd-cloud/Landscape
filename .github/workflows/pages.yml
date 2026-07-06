@@ -33,12 +33,16 @@ jobs:
       - name: Build static site
         run: python scripts/build-site.py
 
-      - name: Copy registry data
+      - name: Export relationship graph
+        run: python scripts/export-graph.py
+
+      - name: Copy registry data and graph exports
         run: |
-          mkdir -p _site/data _site/docs _site/public
+          mkdir -p _site/data _site/docs _site/public _site/graph
           cp -r data/* _site/data/
           cp -r docs/* _site/docs/
           cp -r public/* _site/public/
+          cp -r dist/* _site/graph/
           cp landscape.yml _site/landscape.yml
 
       - name: Upload artifact
