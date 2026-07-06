@@ -1,0 +1,31 @@
+categories:
+  - id: identity-access
+    name: Identity & Access
+    description: Identity, authentication, authorization, credentials, access governance, and trust primitives.
+  - id: agent-runtime
+    name: Agent Runtime
+    description: Agent execution, orchestration, planning, tool use, memory loops, and lifecycle management.
+  - id: policy-governance
+    name: Policy & Governance
+    description: Policy engines, compliance controls, guardrails, audit, and decision enforcement.
+  - id: data-memory
+    name: Data & Memory
+    description: Databases, vector stores, knowledge graphs, event stores, and contextual memory systems.
+  - id: observability
+    name: Observability
+    description: Logs, traces, metrics, evaluation, monitoring, audit trails, and cost visibility.
+  - id: protocols
+    name: Protocols
+    description: Open protocols for agent communication, tools, payments, identity, and application models.
+  - id: commerce-payments
+    name: Commerce & Payments
+    description: Payment rails, fulfillment, mandates, invoices, billing, and commercial workflows.
+  - id: developer-experience
+    name: Developer Experience
+    description: SDKs, CLIs, IDEs, templates, builders, scaffolds, and deployment workflows.
+  - id: edge-sovereign-cloud
+    name: Edge & Sovereign Cloud
+    description: Self-hosted, edge-ready, air-gapped, and sovereign deployment primitives.
+  - id: storage-filesystems
+    name: Storage & Filesystems
+    description: Object storage, distributed filesystems, cloud-native storage, and persistence layers.
