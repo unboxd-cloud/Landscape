@@ -52,6 +52,12 @@ jobs:
       - name: Export graph
         run: python scripts/export-graph.py
 
+      - name: Export CSV files
+        run: python scripts/export-csv.py
+
+      - name: Build API index
+        run: python scripts/build-api-index.py
+
       - name: Create snapshot
         run: python scripts/snapshot.py
 
@@ -59,6 +65,10 @@ jobs:
         run: |
           test -s _site/index.html
           test -s _site/landscape.json
+          test -s _site/api.json
           test -s dist/landscape-graph.mmd
           test -s dist/landscape-graph.dot
+          test -s dist/entries.csv
+          test -s dist/relations.csv
+          test -s dist/scores.csv
           test -n "$(ls snapshots/landscape-*.json)"
