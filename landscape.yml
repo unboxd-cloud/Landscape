@@ -24,3 +24,4 @@ data_files:
   vendors: data/vendors.yml
   relations: data/relations.yml
   scoring: data/scoring.yml
+  scores: data/scores.yml
