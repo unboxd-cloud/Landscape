@@ -1,6 +1,7 @@
 name: Unboxd Cloud Landscape
 description: Open cloud-native, agentic, protocol-first, and sovereign infrastructure landscape.
 homepage: https://github.com/unboxd-cloud/Landscape
+site_url: https://unboxd-cloud.github.io/Landscape
 license:
   code: Apache-2.0
   documentation: CC-BY-4.0
