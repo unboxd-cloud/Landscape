@@ -1,0 +1,194 @@
+market_building_blocks:
+  source_note: Reference-inspired enterprise software market taxonomy. Do not treat as a copy of any proprietary analyst taxonomy.
+  reference:
+    name: Gartner Peer Insights Markets
+    url: https://www.gartner.com/reviews/markets
+    note: Public page describes 500+ enterprise software categories and shows example markets.
+  families:
+    - id: ai-agent-platforms
+      name: AI Agent Platforms
+      description: Building blocks for designing, deploying, governing, observing, and scaling AI agents.
+      example_markets:
+        - AI Agent Development Platforms
+        - AI Agents for Application Developers
+        - AI Agents for Customer Service and Support
+        - AI Agents for Marketing
+        - AI Agents for Procurement
+        - AI Agent Marketplace for HR
+      building_blocks:
+        - agent-builder
+        - agent-runtime
+        - agent-registry
+        - agent-tooling
+        - agent-memory
+        - agent-evaluation
+        - agent-observability
+        - agent-governance
+        - agent-security
+        - agent-marketplace
+      landscape_categories:
+        - agent-runtime
+        - policy-governance
+        - observability
+        - identity-access
+    - id: ai-governance-security
+      name: AI Governance and Security
+      description: Building blocks for AI risk, usage control, evaluation, security testing, and policy enforcement.
+      example_markets:
+        - AI Governance Platforms
+        - AI Usage Control
+        - AI Security Testing
+        - AI Application Security
+        - AI Security and Anomaly Detection
+        - AI Detection and Plagiarism Tools in Education
+      building_blocks:
+        - ai-policy-engine
+        - model-risk-registry
+        - prompt-control
+        - usage-control
+        - audit-log
+        - red-team-testing
+        - data-protection
+        - anomaly-detection
+        - compliance-reporting
+      landscape_categories:
+        - policy-governance
+        - observability
+        - identity-access
+    - id: ai-observability-evaluation
+      name: AI Observability and Evaluation
+      description: Building blocks for monitoring, tracing, evaluating, and improving AI systems.
+      example_markets:
+        - AI Evaluation and Observability Platforms
+        - AI Gateways
+        - AI Applications in IT Service Management
+      building_blocks:
+        - llm-traces
+        - prompt-metrics
+        - evaluation-runs
+        - model-routing
+        - gateway-policy
+        - cost-tracking
+        - quality-scoring
+        - incident-feedback
+      landscape_categories:
+        - observability
+        - agent-runtime
+        - policy-governance
+    - id: api-integration-platforms
+      name: API and Integration Platforms
+      description: Building blocks for APIs, connectors, workflow integration, and service interoperability.
+      example_markets:
+        - API Aggregators
+        - API Generation Software
+      building_blocks:
+        - api-catalog
+        - api-gateway
+        - api-generation
+        - connector-runtime
+        - workflow-orchestration
+        - event-bus
+        - schema-registry
+        - developer-portal
+      landscape_categories:
+        - developer-experience
+        - protocols
+        - agent-runtime
+    - id: application-development
+      name: Application Development and Delivery
+      description: Building blocks for creating, testing, modernizing, and operating enterprise applications.
+      example_markets:
+        - AI Application Development Platforms
+        - AI-Augmented Code Modernization Tools
+        - AI-Augmented Software Testing Tools
+      building_blocks:
+        - app-builder
+        - code-assistant
+        - modernization-engine
+        - testing-platform
+        - ci-cd
+        - release-management
+        - developer-workspace
+        - platform-templates
+      landscape_categories:
+        - developer-experience
+        - edge-sovereign-cloud
+    - id: data-analytics-ai
+      name: Data, Analytics, and AI Services
+      description: Building blocks for data management, analytics, AI services, and enterprise decision intelligence.
+      example_markets:
+        - AI and Data and Analytics Service Providers
+        - AI GTM Platforms
+        - AI Product Management Platforms
+      building_blocks:
+        - data-catalog
+        - semantic-layer
+        - vector-search
+        - knowledge-graph
+        - analytics-workbench
+        - decision-intelligence
+        - data-governance
+        - ai-service-provider-layer
+      landscape_categories:
+        - data-memory
+        - policy-governance
+        - observability
+    - id: customer-operations
+      name: Customer and Business Operations
+      description: Building blocks for customer service, support, business operations, and revenue workflows.
+      example_markets:
+        - AI Agents for Customer Service and Support
+        - AI in CSP Customer and Business Operations
+      building_blocks:
+        - customer-agent
+        - service-desk-agent
+        - revenue-operations-agent
+        - journey-automation
+        - case-management
+        - knowledge-assist
+        - human-handoff
+      landscape_categories:
+        - agent-runtime
+        - commerce-payments
+        - observability
+    - id: hr-workforce
+      name: HR and Workforce AI
+      description: Building blocks for HR agents, employee insights, career pathing, and talent workflows.
+      example_markets:
+        - AI Agent Marketplace for HR
+        - AI in Career Pathing
+        - AI-Enabled Candidate Sourcing
+        - AI-Enabled Interview Intelligence
+        - AI Enabled Employee Focus Group Tools
+      building_blocks:
+        - hr-agent
+        - candidate-sourcing
+        - interview-intelligence
+        - employee-feedback-analysis
+        - career-pathing
+        - skills-graph
+        - workforce-governance
+      landscape_categories:
+        - agent-runtime
+        - identity-access
+        - policy-governance
+    - id: industry-ai
+      name: Industry AI Applications
+      description: Building blocks for vertical AI systems in manufacturing, telecom, education, legal, and media.
+      example_markets:
+        - AI Agents for Manufacturing
+        - AI Legal Assistant Software
+        - AI Offerings in CSP Network Operations
+        - AI Dubbing
+        - AI Video Generators
+      building_blocks:
+        - vertical-agent-template
+        - domain-knowledge-pack
+        - industry-compliance-model
+        - workflow-adapter
+        - media-generation
+        - domain-evaluation
+      landscape_categories:
+        - agent-runtime
+        - policy-governance
+        - data-memory
