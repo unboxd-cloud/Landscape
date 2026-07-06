@@ -34,6 +34,8 @@ def main() -> None:
         "platforms": read_yaml(DATA / "platforms.yml").get("platforms", []),
         "vendors": read_yaml(DATA / "vendors.yml").get("vendors", []),
         "relations": read_yaml(DATA / "relations.yml").get("relations", []),
+        "scoring": read_yaml(DATA / "scoring.yml").get("scoring", {}),
+        "scores": read_yaml(DATA / "scores.yml").get("scores", []),
     }
 
     output = SNAPSHOTS / f"landscape-{today}.json"
