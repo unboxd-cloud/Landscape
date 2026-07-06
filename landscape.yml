@@ -1,0 +1,24 @@
+name: Unboxd Cloud Landscape
+description: Open cloud-native, agentic, protocol-first, and sovereign infrastructure landscape.
+homepage: https://github.com/unboxd-cloud/Landscape
+license:
+  code: Apache-2.0
+  documentation: CC-BY-4.0
+maintainers:
+  - name: Unboxd Cloud
+    github: unboxd-cloud
+principles:
+  - Open standards first
+  - Cloud-native by default
+  - Self-hostable where possible
+  - No unnecessary vendor lock-in
+  - Policy before execution
+  - Identity before access
+  - Provenance before trust
+  - Governance before scale
+data_files:
+  categories: data/categories.yml
+  projects: data/projects.yml
+  protocols: data/protocols.yml
+  platforms: data/platforms.yml
+  vendors: data/vendors.yml
