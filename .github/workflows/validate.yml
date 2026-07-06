@@ -1,0 +1,44 @@
+name: Validate Landscape
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  yaml:
+    name: Validate YAML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Validate YAML files
+        run: |
+          python - <<'PY'
+          import pathlib
+          import sys
+          import yaml
+
+          failed = False
+          for path in pathlib.Path('.').rglob('*.yml'):
+              try:
+                  with path.open('r', encoding='utf-8') as f:
+                      yaml.safe_load(f)
+                  print(f'OK {path}')
+              except Exception as exc:
+                  failed = True
+                  print(f'FAILED {path}: {exc}', file=sys.stderr)
+
+          if failed:
+              sys.exit(1)
+          PY
