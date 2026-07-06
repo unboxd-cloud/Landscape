@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  yaml:
-    name: Validate YAML
+  validate:
+    name: Validate registry
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,9 +20,9 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install pyyaml
+        run: pip install -r requirements.txt
 
-      - name: Validate YAML files
+      - name: Validate YAML syntax
         run: |
           python - <<'PY'
           import pathlib
@@ -42,3 +42,9 @@ jobs:
           if failed:
               sys.exit(1)
           PY
+
+      - name: Validate registry semantics
+        run: python scripts/validate-registry.py
+
+      - name: Build site
+        run: python scripts/build-site.py
