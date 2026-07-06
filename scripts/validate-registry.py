@@ -15,6 +15,7 @@ DATA = ROOT / "data"
 ID_PATTERN = re.compile(r"^[a-z0-9]+[a-z0-9-]*[a-z0-9]$")
 MATURITY_VALUES = {"design", "emerging", "active", "incubating", "graduated", "archived"}
 STATUS_VALUES = {"design", "active", "archived"}
+RELATION_TYPES = {"runs", "uses", "supports", "integrates-with", "observes", "complements", "depends-on", "replaces"}
 
 
 def read_yaml(path: pathlib.Path) -> dict[str, Any]:
@@ -64,12 +65,29 @@ def check_allowed_values(collection_name: str, items: list[dict[str, Any]]) -> N
             fail(f"{collection_name}/{item.get('id')} has invalid status: {status}")
 
 
+def check_relations(relations: list[dict[str, Any]], valid_ids: set[str]) -> None:
+    check_unique_ids("relations", relations)
+    check_required_text("relations", relations, ["source", "target", "type", "description"])
+    for relation in relations:
+        relation_id = relation.get("id")
+        source = relation.get("source")
+        target = relation.get("target")
+        relation_type = relation.get("type")
+        if source not in valid_ids:
+            fail(f"relations/{relation_id} uses unknown source: {source}")
+        if target not in valid_ids:
+            fail(f"relations/{relation_id} uses unknown target: {target}")
+        if relation_type not in RELATION_TYPES:
+            fail(f"relations/{relation_id} uses invalid type: {relation_type}")
+
+
 def main() -> None:
     categories = read_yaml(DATA / "categories.yml").get("categories", [])
     projects = read_yaml(DATA / "projects.yml").get("projects", [])
     protocols = read_yaml(DATA / "protocols.yml").get("protocols", [])
     platforms = read_yaml(DATA / "platforms.yml").get("platforms", [])
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
+    relations = read_yaml(DATA / "relations.yml").get("relations", [])
 
     collections = {
         "categories": categories,
@@ -94,6 +112,11 @@ def main() -> None:
     check_categories("projects", projects, valid_categories)
     check_categories("protocols", protocols, valid_categories)
     check_categories("platforms", platforms, valid_categories)
+
+    valid_ids = set(valid_categories)
+    for items in [projects, protocols, platforms, vendors]:
+        valid_ids.update(item["id"] for item in items)
+    check_relations(relations, valid_ids)
 
     print("Registry validation passed")
 
