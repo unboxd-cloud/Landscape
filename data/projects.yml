@@ -1,0 +1,92 @@
+projects:
+  - id: kubernetes
+    name: Kubernetes
+    category: edge-sovereign-cloud
+    type: orchestration
+    maturity: graduated
+    role: Container orchestration and cloud-native control plane.
+    homepage: https://kubernetes.io/
+  - id: caddy
+    name: Caddy
+    category: edge-sovereign-cloud
+    type: reverse-proxy
+    maturity: active
+    role: Automatic HTTPS reverse proxy and web server.
+    homepage: https://caddyserver.com/
+  - id: surrealdb
+    name: SurrealDB
+    category: data-memory
+    type: database
+    maturity: active
+    role: Multi-model database for documents, graph relationships, and real-time applications.
+    homepage: https://surrealdb.com/
+  - id: openfga
+    name: OpenFGA
+    category: identity-access
+    type: authorization
+    maturity: active
+    role: Fine-grained relationship-based authorization.
+    homepage: https://openfga.dev/
+  - id: opa
+    name: Open Policy Agent
+    category: policy-governance
+    type: policy-engine
+    maturity: graduated
+    role: Policy-as-code engine for authorization and governance decisions.
+    homepage: https://www.openpolicyagent.org/
+  - id: prometheus
+    name: Prometheus
+    category: observability
+    type: metrics
+    maturity: graduated
+    role: Metrics, monitoring, and alerting foundation.
+    homepage: https://prometheus.io/
+  - id: grafana
+    name: Grafana
+    category: observability
+    type: dashboard
+    maturity: active
+    role: Dashboards and observability visualization.
+    homepage: https://grafana.com/
+  - id: langfuse
+    name: Langfuse
+    category: observability
+    type: llm-observability
+    maturity: active
+    role: LLM traces, prompt observability, evaluation, and cost tracking.
+    homepage: https://langfuse.com/
+  - id: litellm
+    name: LiteLLM
+    category: agent-runtime
+    type: model-router
+    maturity: active
+    role: Model routing and provider abstraction for LLM applications.
+    homepage: https://www.litellm.ai/
+  - id: langgraph
+    name: LangGraph
+    category: agent-runtime
+    type: workflow-runtime
+    maturity: active
+    role: Stateful agent and workflow orchestration.
+    homepage: https://www.langchain.com/langgraph
+  - id: headlamp
+    name: Headlamp
+    category: developer-experience
+    type: kubernetes-ui
+    maturity: active
+    role: Kubernetes user interface for cluster operations.
+    homepage: https://headlamp.dev/
+  - id: rustfs
+    name: RustFS
+    category: storage-filesystems
+    type: object-storage
+    maturity: active
+    role: S3-compatible object storage written in Rust.
+    homepage: https://rustfs.com/
+  - id: cubefs
+    name: CubeFS
+    category: storage-filesystems
+    type: distributed-filesystem
+    maturity: incubating
+    role: Cloud-native distributed storage and filesystem.
+    homepage: https://cubefs.io/
