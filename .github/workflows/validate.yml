@@ -48,3 +48,11 @@ jobs:
 
       - name: Build site
         run: python scripts/build-site.py
+
+      - name: Export graph
+        run: python scripts/export-graph.py
+
+      - name: Verify generated graph files
+        run: |
+          test -s dist/landscape-graph.mmd
+          test -s dist/landscape-graph.dot
