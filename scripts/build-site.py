@@ -13,6 +13,7 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
 DATA = ROOT / "data"
+SCORE_FIELDS = ["openness", "maturity", "self-hostability", "governance-readiness", "cloud-native-fit"]
 
 
 def read_yaml(path: pathlib.Path) -> dict[str, Any]:
@@ -24,14 +25,34 @@ def esc(value: Any) -> str:
     return html.escape(str(value or ""))
 
 
-def normalize(kind: str, items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def average_score(score: dict[str, Any] | None) -> float | None:
+    if not score:
+        return None
+    values = [score.get(field) for field in SCORE_FIELDS]
+    if not all(isinstance(value, int) for value in values):
+        return None
+    return round(sum(values) / len(values), 1)
+
+
+def normalize(kind: str, items: list[dict[str, Any]], scores_by_entry: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
     normalized: list[dict[str, Any]] = []
     for item in items:
         entry = dict(item)
         entry["kind"] = kind
         entry["summary"] = item.get("description") or item.get("role") or ""
+        score = scores_by_entry.get(item.get("id"))
+        if score:
+            entry["score"] = score
+            entry["average_score"] = average_score(score)
         normalized.append(entry)
     return normalized
+
+
+def render_score_badge(item: dict[str, Any]) -> str:
+    avg = item.get("average_score")
+    if avg is None:
+        return ""
+    return f'<div class="avg-score">Score <strong>{esc(avg)}</strong>/5</div>'
 
 
 def render_cards(items: list[dict[str, Any]]) -> str:
@@ -44,14 +65,9 @@ def render_cards(items: list[dict[str, Any]]) -> str:
         search_text = " ".join(
             str(part or "")
             for part in [
-                item.get("name"),
-                item.get("id"),
-                item.get("kind"),
-                item.get("category"),
-                item.get("type"),
-                item.get("maturity"),
-                item.get("status"),
-                item.get("summary"),
+                item.get("name"), item.get("id"), item.get("kind"), item.get("category"),
+                item.get("type"), item.get("maturity"), item.get("status"), item.get("summary"),
+                item.get("average_score"),
             ]
         ).lower()
         cards.append(
@@ -59,6 +75,7 @@ def render_cards(items: list[dict[str, Any]]) -> str:
             <article class="card" data-kind="{esc(item.get('kind'))}" data-category="{esc(item.get('category'))}" data-search="{esc(search_text)}">
               <div class="card-topline">{esc(item.get('kind')).replace('-', ' ')}</div>
               <h3>{esc(item.get('name'))}</h3>
+              {render_score_badge(item)}
               <p class="meta">{meta}</p>
               <p>{esc(item.get('summary'))}</p>
               {link}
@@ -102,6 +119,27 @@ def render_scoring(scoring: dict[str, Any]) -> str:
     return "".join(cards)
 
 
+def render_score_table(scores: list[dict[str, Any]], names_by_id: dict[str, str]) -> str:
+    rows = []
+    for score in sorted(scores, key=lambda item: average_score(item) or 0, reverse=True):
+        avg = average_score(score)
+        rows.append(
+            f"""
+            <tr>
+              <td>{esc(names_by_id.get(score.get('entry'), score.get('entry')))}</td>
+              <td>{esc(avg)}</td>
+              <td>{esc(score.get('openness'))}</td>
+              <td>{esc(score.get('maturity'))}</td>
+              <td>{esc(score.get('self-hostability'))}</td>
+              <td>{esc(score.get('governance-readiness'))}</td>
+              <td>{esc(score.get('cloud-native-fit'))}</td>
+              <td>{esc(score.get('notes'))}</td>
+            </tr>
+            """
+        )
+    return "".join(rows)
+
+
 def main() -> None:
     SITE.mkdir(exist_ok=True)
 
@@ -113,13 +151,15 @@ def main() -> None:
     vendors = read_yaml(DATA / "vendors.yml").get("vendors", [])
     relations = read_yaml(DATA / "relations.yml").get("relations", [])
     scoring = read_yaml(DATA / "scoring.yml")
+    scores = read_yaml(DATA / "scores.yml").get("scores", [])
+    scores_by_entry = {score["entry"]: score for score in scores}
 
     entries = [
-        *normalize("category", categories),
-        *normalize("project", projects),
-        *normalize("protocol", protocols),
-        *normalize("platform", platforms),
-        *normalize("foundation", vendors),
+        *normalize("category", categories, scores_by_entry),
+        *normalize("project", projects, scores_by_entry),
+        *normalize("protocol", protocols, scores_by_entry),
+        *normalize("platform", platforms, scores_by_entry),
+        *normalize("foundation", vendors, scores_by_entry),
     ]
     names_by_id = {entry["id"]: entry["name"] for entry in entries}
 
@@ -128,6 +168,7 @@ def main() -> None:
         "entries": entries,
         "relations": relations,
         "scoring": scoring.get("scoring", {}),
+        "scores": scores,
     }
     (SITE / "landscape.json").write_text(json.dumps(export, indent=2, sort_keys=True), encoding="utf-8")
 
@@ -164,9 +205,11 @@ def main() -> None:
     .toolbar {{ position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 190px 220px; gap: 12px; padding: 14px; margin: 0 0 22px; background: rgba(248, 250, 252, .92); backdrop-filter: blur(10px); border: 1px solid var(--line); border-radius: 22px; }}
     input, select {{ width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: 14px; padding: 12px 14px; font: inherit; color: var(--ink); }}
     .grid, .score-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 16px; }}
-    .card {{ background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-height: 210px; }}
+    .card {{ background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; min-height: 230px; }}
     .card[hidden] {{ display: none; }}
     .card-topline {{ display: inline-flex; margin-bottom: 12px; padding: 5px 9px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
+    .avg-score {{ float: right; margin-top: -36px; padding: 8px 10px; border-radius: 14px; background: var(--soft); color: var(--muted); font-size: 13px; }}
+    .avg-score strong {{ color: var(--ink); }}
     .meta {{ font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #64748b; }}
     a {{ color: var(--ink); font-weight: 700; }}
     .empty {{ display: none; padding: 28px; border: 1px dashed var(--line); border-radius: 20px; text-align: center; color: var(--muted); }}
@@ -174,6 +217,10 @@ def main() -> None:
     .relation {{ background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }}
     .relation span, .score-card span {{ display: inline-flex; margin: 0 8px 0 0; padding: 4px 8px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }}
     .relation p {{ margin-bottom: 0; }}
+    .table-wrap {{ overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 920px; }}
+    th, td {{ padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
+    th {{ font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); background: var(--soft); }}
     footer {{ border-top: 1px solid var(--line); padding: 24px; color: var(--muted); text-align: center; }}
     @media (max-width: 780px) {{ .toolbar {{ grid-template-columns: 1fr; }} }}
   </style>
@@ -193,13 +240,19 @@ def main() -> None:
       <div class="stat"><strong>{len(entries)}</strong><span>Total entries</span></div>
       <div class="stat"><strong>{len(projects)}</strong><span>Projects</span></div>
       <div class="stat"><strong>{len(protocols)}</strong><span>Protocols</span></div>
-      <div class="stat"><strong>{len(relations)}</strong><span>Relations</span></div>
+      <div class="stat"><strong>{len(scores)}</strong><span>Scored entries</span></div>
     </section>
 
     <section>
       <h2>Decision scoring model</h2>
       <p>The landscape uses these dimensions to evaluate architectural fit, governance readiness, and operational usefulness.</p>
       <div class="score-grid">{render_scoring(scoring)}</div>
+    </section>
+
+    <section>
+      <h2>Scoreboard</h2>
+      <p>Scores are directional architecture signals. They should be improved with evidence over time.</p>
+      <div class="table-wrap"><table><thead><tr><th>Entry</th><th>Avg</th><th>Open</th><th>Mature</th><th>Self-host</th><th>Gov</th><th>Cloud-native</th><th>Notes</th></tr></thead><tbody>{render_score_table(scores, names_by_id)}</tbody></table></div>
     </section>
 
     <section class="toolbar" aria-label="Landscape filters">
